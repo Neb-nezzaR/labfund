@@ -1,0 +1,52 @@
+; GETLINEF
+
+2014 0000 ; "GETLINEF>"		;	GETLINEF	>
+2004 0000 ; "GL_END>"		;	GL_END 		>
+2000 0000 ; "GL_UL>"		;	GL_UL 		>
+2002 0000 ; "GL_BUF>"		;	GL_BUF 		>
+
+				;	&	/0000
+
+;VARs
+8000 0000		;	GL_UL		K	/0000 	; UL do arquivo
+8002 0000		;	GL_BUF		K	/0000 	; Tamanho do Buffer
+8004 0000		;	GL_END 		K	/0000 	; Endereço do Buffer
+8006 0000		;	AUX			K	/0000	; Variavel Auxiliar
+
+;CONSTs
+8008 0002		;	TWO			K	/0002 	; Constante dois
+800a 0d0a		;	EOL			K	/0d0a 	; Constante EOL
+800c 100a		;	EOF			K	/100a	; Contante EOF
+800e 0000		;	ZERO		K	/0000 	; Constante zero
+8010 0001		;	ONE			K	/0001	; Constante um
+8012 d300		;	FREAD		K	/d300	; Monta instrução 'ler do disco'
+
+;FUNC
+8014 0000		;	GETLINEF	$	/1 	; Endereço de retorno   0
+				;	GETLINEF	$	/1 	; Endereço de retorno
+a016 8002		;	START		LD	GL_BUF	;
+a018 500e		;				-	ZERO 	;	
+a01a 1044		;				JZ	RETURN	;
+a01c 8000		;				LD	GL_UL	; Carrega a UL do arquivo no acumulador
+a01e 4012		;				+	FREAD	; Monta a instrucao de escrever 
+a020 9022		;				MM	READ
+8022 0000		;	READ		K	/0000	; Executa a leitura do arquivo
+a024 9006		;				MM	AUX 	; Grava o conteudo do arquivo em AUX
+a026 500a		;				-	EOL		;
+a028 1016		;				JZ	START	;
+a02a 8006		;				LD	AUX 	;
+a02c 500c		;				-	EOF		;
+a02e 1042		;				JZ	RETEOF	;
+a030 8006		;				LD	AUX 	;
+a032 9004		;				MM	GL_END	;
+a034 8004		;				LD 	GL_END	;
+a036 4008		;				+	TWO		;
+a038 9004		;				MM	GL_END	;
+a03a 8002		;				LD	GL_BUF	;
+a03c 5010		;				-	ONE		;
+a03e 9002		;				MM	GL_BUF	;
+a040 0016		;				JP	START	;
+a042 8010		;	RETEOF		LD	ONE		;
+a044 b014		;	RETURN		RS	GETLINEF
+
+			
